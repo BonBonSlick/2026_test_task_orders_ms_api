@@ -1,0 +1,62 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        failure_transport: failed
+        default_bus: command.bus
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            #            async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            #            rabbitmq: 'amqp://guest:guest@messenger-hub:5672/%2F/events'
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+            # External RabbitMQ transport
+            rabbitmq_events:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: events
+                        type: topic
+                    queues:
+                        products_orders_queue: ~
+                # retry strategy configuration
+                retry_strategy:
+                    max_retries: 3
+                    # time to wait before the first retry (in milliseconds)
+                    delay: 5000
+                    # multiplier applied to the delay on each subsequent retry
+                    # (e.g. with a 1000 ms delay, a 2 multiplier means: 1s, 2s, 4s, ...)
+                    multiplier: 2
+                    # maximum delay allowed regardless of the multiplier (0 means no limit)
+                    max_delay: 0
+                    # randomness factor (between 0 and 1.0) added to each delay to
+                    # prevent multiple failed messages from being retried simultaneously
+                    jitter: 0.1
+            failed: 'doctrine://default?queue_name=failed'
+
+        buses:
+            command.bus:
+                middleware:
+                    - validation
+                    - doctrine_transaction
+
+            query.bus:
+                middleware:
+                    - validation
+
+            event.bus:
+                default_middleware:
+                    enabled: true
+                    # set "allow_no_handlers" to true (default is false) to allow having
+                    # no handler configured for this bus without throwing an exception
+                    allow_no_handlers: true
+                    # set "allow_no_senders" to false (default is true) to throw an exception
+                    # if no sender is configured for this bus
+                    allow_no_senders: false
+                middleware:
+                    - validation
+
+        routing:
+            # Routes specific classes to the RabbitMQ transport
+            Shared\Contracts\DTO\OrderCreated:
+                senders: [ rabbitmq_events ]
+                send_and_handle: false

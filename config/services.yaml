@@ -16,5 +16,24 @@ services:
     App\:
         resource: '../src/'
 
+    # Clear aliases for injection
+    Symfony\Component\Messenger\MessageBusInterface $commandBus: '@command.bus'
+    Symfony\Component\Messenger\MessageBusInterface $queryBus: '@query.bus'
+    Symfony\Component\Messenger\MessageBusInterface $eventBus: '@event.bus'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Domain\Model\Order\IOrderRepository:
+        alias: App\Infrastructure\Persistence\Repository\OrderRepository
+
+    _instanceof:
+        # will be registered on the command.bus bus
+        App\Domain\Interface\ICommandHandler:
+            tags:
+                - { name: messenger.message_handler, bus: command.bus }
+
+        # registered on the query.bus bus
+        App\Domain\Interface\IQueryHandler:
+            tags:
+                - { name: messenger.message_handler, bus: query.bus }
