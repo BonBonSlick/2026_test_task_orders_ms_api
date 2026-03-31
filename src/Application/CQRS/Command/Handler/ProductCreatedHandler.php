@@ -7,7 +7,7 @@ namespace App\Application\CQRS\Command\Handler;
 use App\Domain\Interface\ICommandHandler;
 use App\Domain\Model\Product\IProductFactory;
 use App\Domain\Model\Product\IProductRepository;
-use Shared\Contracts\DTO\ProductCreated;
+use Shared\Contracts\DTO\Product\ProductCreated;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 

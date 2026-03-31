@@ -66,6 +66,10 @@ class  Order
         $this->status = OrderStatusEnum::CONFIRMED;
     }
 
+    public function outOfStock(): void {
+        $this->status = OrderStatusEnum::OUT_OF_STOCK;
+    }
+
     public function customerName(): string {
         return $this->customerName;
     }

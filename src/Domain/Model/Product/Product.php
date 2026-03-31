@@ -16,12 +16,11 @@ use Symfony\Component\Uid\Uuid;
 class Product extends AbstractProduct
 {
 
-    public function decreaseQuantity(int $quantity): void {
-        $this->quantity -= $quantity;
+    public function setQuantity(int $quantity): void {
+        $this->quantity = $quantity;
     }
 
     public function setID(Uuid $uuid): void {
         $this->id = $uuid;
     }
-
 }

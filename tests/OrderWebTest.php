@@ -30,9 +30,9 @@ class OrderWebTest extends WebTestCase
             method    : Request::METHOD_POST,
             uri       : '/order/create',
             parameters: [
-                            'productID'    => '00cc2952-8677-4d1d-83f1-d74875347784',
+                            'productID'    => 'dcf89298-82cc-4b0e-b6bb-a41cfac6b626',
                             'customerName' => 'Test Customer',
-                            'quantity'     => 10,
+                            'quantity'     => 5,
                         ],
             server    : $this->serverConfigs,
         );
