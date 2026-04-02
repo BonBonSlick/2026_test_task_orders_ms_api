@@ -1,0 +1,188 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Orders API",
+        "description": "API to manage orders",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/order/create": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Create a new order",
+                "operationId": "post_order.create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrderDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/order/list": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get list of orders",
+                "operationId": "get_order.list",
+                "responses": {
+                    "200": {
+                        "description": "List of orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Order2"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get order by ID",
+                "operationId": "get_order.info",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CreateOrderDTO": {
+                "required": [
+                    "customerName",
+                    "productID",
+                    "quantity"
+                ],
+                "properties": {
+                    "customerName": {
+                        "description": "Customer name.",
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 2
+                    },
+                    "productID": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "description": "Total orders in stock.",
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                },
+                "type": "object"
+            },
+            "OrderStatusEnum": {
+                "type": "string",
+                "enum": [
+                    "processing",
+                    "confirmed",
+                    "out_of_stock",
+                    "shipped",
+                    "delivered",
+                    "cancelled"
+                ]
+            },
+            "Order": {
+                "required": [
+                    "id",
+                    "status",
+                    "createdAt",
+                    "productID",
+                    "quantity",
+                    "customerName"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/OrderStatusEnum"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "productID": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "customerName": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Order2": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Order",
+            "description": "Order management"
+        }
+    ]
+}
